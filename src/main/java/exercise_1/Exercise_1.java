@@ -21,11 +21,7 @@ public class Exercise_1 {
     private static class VProg extends AbstractFunction3<Long, Integer, Integer, Integer> implements Serializable {
         @Override
         public Integer apply(Long vertexID, Integer vertexValue, Integer message) {
-            if (message == Integer.MAX_VALUE) {             // superstep 0
-                return vertexValue;
-            } else {                                        // superstep > 0
-                return Math.max(vertexValue, message);
-            }
+            return Math.max(vertexValue, message);
         }
     }
 
