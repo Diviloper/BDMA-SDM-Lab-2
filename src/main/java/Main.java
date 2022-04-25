@@ -1,4 +1,6 @@
 import com.google.common.io.Files;
+
+import exercise_1.Exercise_1;
 import exercise_2.Exercise_2;
 import exercise_3.Exercise_3;
 import exercise_4.Exercise_4;
@@ -11,12 +13,11 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.sql.SQLContext;
 
-import exercise_1.Exercise_1;
 import utils.Utils;
 
 public class Main {
 
-	static String HADOOP_COMMON_PATH = "C:\\Dev\\Tools\\hadoop-3.2.2";
+	static String HADOOP_COMMON_PATH = "D:\\Master\\BDMA\\Courses\\Semester_2\\Semantic_Data_Management\\Lab2\\BDMA-SDM-Lab-2\\src\\main\\resources"; // "C:\\...\\SparkGraphXassignment\\src\\main\\resources"
 	
 	public static void main(String[] args) throws Exception {
 		System.setProperty("hadoop.home.dir", HADOOP_COMMON_PATH);
