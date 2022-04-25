@@ -49,12 +49,15 @@ public class Exercise_1 {
     }
 
     public static void maxValue(JavaSparkContext ctx) {
+    
+        // Here, a list of tuples is created to represent the vertices. Each tuple corresponds to one vertex. Each tuple contains the vertex identifier and the vertex value.
         List<Tuple2<Object, Integer>> vertices = Lists.newArrayList(
                 new Tuple2<Object, Integer>(1L, 9),
                 new Tuple2<Object, Integer>(2L, 1),
                 new Tuple2<Object, Integer>(3L, 6),
                 new Tuple2<Object, Integer>(4L, 8)
         );
+        // Here, a list of Edges is created to represent the edges. Each edge contains the origin vertex, the destiny vertex and the path value.
         List<Edge<Integer>> edges = Lists.newArrayList(
                 new Edge<Integer>(1L, 2L, 1),
                 new Edge<Integer>(2L, 3L, 1),
@@ -63,9 +66,12 @@ public class Exercise_1 {
                 new Edge<Integer>(3L, 1L, 1)
         );
 
+        // Create the GraphX vertices using the above vertices list
         JavaRDD<Tuple2<Object, Integer>> verticesRDD = ctx.parallelize(vertices);
+        // Create the GraphX edges using the above edges list
         JavaRDD<Edge<Integer>> edgesRDD = ctx.parallelize(edges);
 
+        // Create the the graph
         Graph<Integer, Integer> G = Graph.apply(verticesRDD.rdd(), edgesRDD.rdd(), 1, StorageLevel.MEMORY_ONLY(), StorageLevel.MEMORY_ONLY(),
                 scala.reflect.ClassTag$.MODULE$.apply(Integer.class), scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
 
