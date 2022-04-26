@@ -8,9 +8,11 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.RowFactory;
 import org.apache.spark.sql.SQLContext;
 import org.apache.spark.sql.types.DataTypes;
+import org.apache.spark.sql.types.MetadataBuilder;
 import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
 import org.graphframes.GraphFrame;
+import org.graphframes.lib.PageRank;
 
 import java.util.List;
 
@@ -22,11 +24,10 @@ public class Exercise_4 {
         JavaRDD<String> vertices = ctx.textFile("src/main/resources/wiki-vertices.txt");
 
         // Create vertices metadata
-        List<StructField> fieldsVertices = Lists.newArrayList(
+        StructType schemaForVertices = DataTypes.createStructType(Lists.newArrayList(
                 DataTypes.createStructField("id", DataTypes.LongType, false),
                 DataTypes.createStructField("name", DataTypes.StringType, false)
-        );
-        StructType schemaForVertices = DataTypes.createStructType(fieldsVertices);
+        ));
 
         // Convert lines into rows (since file is tab separated, split by \t)
         Dataset<Row> V = sqlCtx.createDataFrame(
@@ -39,15 +40,15 @@ public class Exercise_4 {
         JavaRDD<String> edges = ctx.textFile("src/main/resources/wiki-edges.txt");
 
         // Create edges metadata
-        List<StructField> fieldsEdges = Lists.newArrayList(
+        StructType schemaForEdges = DataTypes.createStructType(Lists.newArrayList(
                 DataTypes.createStructField("src", DataTypes.LongType, false),
                 DataTypes.createStructField("dst", DataTypes.LongType, false)
-        );
-        StructType schemaForEdges = DataTypes.createStructType(fieldsEdges);
+        ));
 
         // Convert lines into rows (since file is tab separated, split by \t)
         Dataset<Row> E = sqlCtx.createDataFrame(
-                edges.map(e -> e.split("\t"))
+                edges
+                        .map(e -> e.split("\t"))
                         .map(e -> RowFactory.create(Long.parseLong(e[0]), Long.parseLong(e[1]))),
                 schemaForEdges);
 
@@ -56,13 +57,13 @@ public class Exercise_4 {
         GraphFrame G = GraphFrame.apply(V, E);
 
         // Apply PageRank
-        org.graphframes.lib.PageRank pr = G.pageRank().resetProbability(0.15).maxIter(15);
+        PageRank pr = G.pageRank().resetProbability(0.15).maxIter(15);
         GraphFrame pageRankGraph = pr.run();
 
-        List<Row> topPages = pageRankGraph.vertices()
+        List<Row> topPages = pageRankGraph
+                .vertices()
                 .sort(org.apache.spark.sql.functions.desc("pagerank"))
-                .toJavaRDD()
-                .take(10);
+                .takeAsList(10);
         for (Row r : topPages) {
             System.out.println(r.getDouble(2) + ": " + r.getString(1));
         }
