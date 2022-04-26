@@ -56,7 +56,7 @@ public class Exercise_4 {
         // Create graph from Vertices and Edges
         GraphFrame G = GraphFrame.apply(V, E);
 
-        // Apply PageRank
+        // Apply PageRank with damping factor 0.85 (1-0.15) and 15 iterations
         PageRank pr = G.pageRank().resetProbability(0.15).maxIter(15);
         GraphFrame pageRankGraph = pr.run();
 
