@@ -15,10 +15,16 @@ import org.apache.spark.sql.SQLContext;
 
 import utils.Utils;
 
+import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
+
+
 public class Main {
 
-	static String HADOOP_COMMON_PATH = "D:\\Master\\BDMA\\Courses\\Semester_2\\Semantic_Data_Management\\Lab2\\BDMA-SDM-Lab-2\\src\\main\\resources"; // "C:\\...\\SparkGraphXassignment\\src\\main\\resources"
-	
+//	static String HADOOP_COMMON_PATH = "D:\\Master\\BDMA\\Courses\\Semester_2\\Semantic_Data_Management\\Lab2\\BDMA-SDM-Lab-2\\src\\main\\resources"; // "C:\\...\\SparkGraphXassignment\\src\\main\\resources"
+	static String HADOOP_COMMON_PATH = "C:\\Users\\Victor\\Development\\BDMA\\UPC\\SDM\\DistributedGraphsLab\\src\\main\\resources"; // "C:\\...\\SparkGraphXassignment\\src\\main\\resources"
+
 	public static void main(String[] args) throws Exception {
 		System.setProperty("hadoop.home.dir", HADOOP_COMMON_PATH);
 
