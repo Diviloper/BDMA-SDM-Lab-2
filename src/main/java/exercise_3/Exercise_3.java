@@ -87,11 +87,17 @@ public class Exercise_3 {
         JavaRDD<Tuple2<Object, Tuple2<Integer, List<Long>>>> verticesRDD = ctx.parallelize(vertices);
         JavaRDD<Edge<Integer>> edgesRDD = ctx.parallelize(edges);
 
-        Graph<Tuple2<Integer, List<Long>>, Integer> G = Graph.apply(verticesRDD.rdd(), edgesRDD.rdd(),
-                new Tuple2<>(0, Lists.newArrayList()), StorageLevel.MEMORY_ONLY(), StorageLevel.MEMORY_ONLY(),
-                scala.reflect.ClassTag$.MODULE$.apply(Tuple2.class), scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
+        Graph<Tuple2<Integer, List<Long>>, Integer> G = Graph.apply(
+                verticesRDD.rdd(), edgesRDD.rdd(),
+                new Tuple2<>(0, Lists.newArrayList()),
+                StorageLevel.MEMORY_ONLY(), StorageLevel.MEMORY_ONLY(),
+                ClassTag$.MODULE$.apply(Tuple2.class), ClassTag$.MODULE$.apply(Integer.class));
 
-        GraphOps<Tuple2<Integer, List<Long>>, Integer> ops = new GraphOps<>(G, scala.reflect.ClassTag$.MODULE$.apply(Tuple2.class), scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
+        GraphOps<Tuple2<Integer, List<Long>>, Integer> ops = new GraphOps<>(
+                G,
+                ClassTag$.MODULE$.apply(Tuple2.class),
+                ClassTag$.MODULE$.apply(Integer.class)
+        );
 
         ops.pregel(new Tuple2<>(Integer.MAX_VALUE, Lists.newArrayList()),
                         Integer.MAX_VALUE,

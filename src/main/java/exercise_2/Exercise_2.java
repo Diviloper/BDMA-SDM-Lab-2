@@ -84,16 +84,18 @@ public class Exercise_2 {
         JavaRDD<Tuple2<Object, Integer>> verticesRDD = ctx.parallelize(vertices);
         JavaRDD<Edge<Integer>> edgesRDD = ctx.parallelize(edges);
 
-        Graph<Integer, Integer> G = Graph.apply(verticesRDD.rdd(),
-                edgesRDD.rdd(),
+        Graph<Integer, Integer> G = Graph.apply(
+                verticesRDD.rdd(), edgesRDD.rdd(),
                 1,
-                StorageLevel.MEMORY_ONLY(),
-                StorageLevel.MEMORY_ONLY(),
-                scala.reflect.ClassTag$.MODULE$.apply(Integer.class),
-                scala.reflect.ClassTag$.MODULE$.apply(Integer.class)
+                StorageLevel.MEMORY_ONLY(), StorageLevel.MEMORY_ONLY(),
+                ClassTag$.MODULE$.apply(Integer.class), ClassTag$.MODULE$.apply(Integer.class)
         );
 
-        GraphOps<Integer, Integer> ops = new GraphOps<>(G, scala.reflect.ClassTag$.MODULE$.apply(Integer.class), scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
+        GraphOps<Integer, Integer> ops = new GraphOps<>(
+                G,
+                ClassTag$.MODULE$.apply(Integer.class),
+                ClassTag$.MODULE$.apply(Integer.class)
+        );
 
         ops.pregel(Integer.MAX_VALUE,
                         Integer.MAX_VALUE,
@@ -105,7 +107,8 @@ public class Exercise_2 {
                 .vertices()
                 .toJavaRDD()
                 .sortBy(v -> labels.get((Long) v._1), true, 1)
-                .foreach(v -> System.out.println("Minimum cost to get from " + labels.get(1L) + " to " + labels.get((Long) v._1) + " is " + v._2));
+                .foreach(v -> System.out.println("Minimum cost to get from " + labels.get(1L) + " to "
+                        + labels.get((Long) v._1) + " is " + v._2));
     }
 
 }
