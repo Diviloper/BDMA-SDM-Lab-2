@@ -20,9 +20,9 @@ import java.util.stream.Collectors;
 
 public class Exercise_3 {
 
-    private static class VProg extends AbstractFunction3<Long, Tuple2<Integer, List<Long>>, Tuple2<Integer, List<Long>>, Tuple2<Integer, List<Long>>> implements Serializable {
+    private static class VProg extends AbstractFunction3<Object, Tuple2<Integer, List<Long>>, Tuple2<Integer, List<Long>>, Tuple2<Integer, List<Long>>> implements Serializable {
         @Override
-        public Tuple2<Integer, List<Long>> apply(Long vertexID, Tuple2<Integer, List<Long>> vertexValue, Tuple2<Integer, List<Long>> message) {
+        public Tuple2<Integer, List<Long>> apply(Object vertexID, Tuple2<Integer, List<Long>> vertexValue, Tuple2<Integer, List<Long>> message) {
             return vertexValue._1 <= message._1 ? vertexValue : message;
         }
     }
@@ -91,7 +91,7 @@ public class Exercise_3 {
                 new Tuple2<>(0, Lists.newArrayList()), StorageLevel.MEMORY_ONLY(), StorageLevel.MEMORY_ONLY(),
                 scala.reflect.ClassTag$.MODULE$.apply(Tuple2.class), scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
 
-        GraphOps ops = new GraphOps(G, scala.reflect.ClassTag$.MODULE$.apply(Tuple2.class), scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
+        GraphOps<Tuple2<Integer, List<Long>>, Integer> ops = new GraphOps<>(G, scala.reflect.ClassTag$.MODULE$.apply(Tuple2.class), scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
 
         ops.pregel(new Tuple2<>(Integer.MAX_VALUE, Lists.newArrayList()),
                         Integer.MAX_VALUE,
@@ -102,14 +102,11 @@ public class Exercise_3 {
                         ClassTag$.MODULE$.apply(Tuple2.class))
                 .vertices()
                 .toJavaRDD()
-                .sortBy(v -> {
-                    Tuple2<Object, Integer> vertex = (Tuple2<Object, Integer>) v;
-                    return labels.get(vertex._1);
-                }, true, 1)
+                .sortBy(v -> labels.get((Long) v._1), true, 1)
                 .foreach(v -> {
-                    Tuple2<Object, Tuple2<Integer, List<Long>>> vertex = (Tuple2<Object, Tuple2<Integer, List<Long>>>) v;
-                    String path = vertex._2._2.stream().map(p -> labels.get(p)).collect(Collectors.joining(","));
-                    System.out.println("Minimum path to get from " + labels.get(1L) + " to " + labels.get(vertex._1) + " is [" + path + "] with cost " + vertex._2._1);
+                    String path = v._2._2.stream().map(labels::get).collect(Collectors.joining(" -> "));
+                    System.out.println("Minimum path to get from " + labels.get(1L) + " to " + labels.get((Long) v._1) +
+                            " is [" + path + "] with cost " + v._2._1);
                 });
     }
 

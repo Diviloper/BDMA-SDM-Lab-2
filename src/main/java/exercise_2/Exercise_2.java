@@ -19,9 +19,9 @@ import java.util.Map;
 
 public class Exercise_2 {
 
-    private static class VProg extends AbstractFunction3<Long, Integer, Integer, Integer> implements Serializable {
+    private static class VProg extends AbstractFunction3<Object, Integer, Integer, Integer> implements Serializable {
         @Override
-        public Integer apply(Long vertexID, Integer vertexValue, Integer message) {
+        public Integer apply(Object vertexID, Integer vertexValue, Integer message) {
             return Math.min(vertexValue, message);
         }
     }
@@ -93,7 +93,7 @@ public class Exercise_2 {
                 scala.reflect.ClassTag$.MODULE$.apply(Integer.class)
         );
 
-        GraphOps ops = new GraphOps(G, scala.reflect.ClassTag$.MODULE$.apply(Integer.class), scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
+        GraphOps<Integer, Integer> ops = new GraphOps<>(G, scala.reflect.ClassTag$.MODULE$.apply(Integer.class), scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
 
         ops.pregel(Integer.MAX_VALUE,
                         Integer.MAX_VALUE,
@@ -104,14 +104,8 @@ public class Exercise_2 {
                         ClassTag$.MODULE$.apply(Integer.class))
                 .vertices()
                 .toJavaRDD()
-                .sortBy(v -> {
-                    Tuple2<Object, Integer> vertex = (Tuple2<Object, Integer>) v;
-                    return labels.get(vertex._1);
-                }, true, 1)
-                .foreach(v -> {
-                    Tuple2<Object, Integer> vertex = (Tuple2<Object, Integer>) v;
-                    System.out.println("Minimum cost to get from " + labels.get(1L) + " to " + labels.get(vertex._1) + " is " + vertex._2);
-                });
+                .sortBy(v -> labels.get((Long) v._1), true, 1)
+                .foreach(v -> System.out.println("Minimum cost to get from " + labels.get(1L) + " to " + labels.get((Long) v._1) + " is " + v._2));
     }
 
 }
