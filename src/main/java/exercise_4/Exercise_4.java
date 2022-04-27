@@ -57,7 +57,7 @@ public class Exercise_4 {
         GraphFrame G = GraphFrame.apply(V, E);
 
         // Apply PageRank with damping factor 0.85 (1-0.15) and 15 iterations
-        PageRank pr = G.pageRank().resetProbability(0.15).maxIter(15);
+        PageRank pr = G.pageRank().resetProbability(0.15).maxIter(17);
         GraphFrame pageRankGraph = pr.run();
 
         List<Row> topPages = pageRankGraph

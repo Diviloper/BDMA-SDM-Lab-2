@@ -13,7 +13,7 @@
         {
             "type": "java",
             "name": "Launch Main",
-            "args": "exercise2",
+            "args": "exercise4",
             "request": "launch",
             "mainClass": "Main",
             "projectName": "spark_graphs_II"
