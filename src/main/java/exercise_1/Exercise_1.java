@@ -32,7 +32,7 @@ public class Exercise_1 {
             Tuple2<Object, Integer> dstVertex = triplet.toTuple()._2();
 
             if (sourceVertex._2 <= dstVertex._2) {   // source vertex value is smaller than dst vertex?
-//                System.out.println("Vertex " + sourceVertex._1 + " -> " + dstVertex._1 + ": No message");
+                System.out.println("Vertex " + sourceVertex._1 + " -> " + dstVertex._1 + ": No message");
                 // do nothing
                 return noMessages();
             } else {
