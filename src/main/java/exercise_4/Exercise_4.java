@@ -21,6 +21,7 @@ public class Exercise_4 {
         PageRank pr = G.pageRank().resetProbability(0.15);
 
         Integer maxIterations = findBestIterations(pr);
+//        Integer maxIterations = 20; // Uncomment this line and comment the previous one to run with predefined number of iterations
         System.out.println("Running with " + maxIterations + " iterations");
         pr.maxIter(maxIterations);
 
