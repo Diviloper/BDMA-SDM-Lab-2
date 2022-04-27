@@ -8,6 +8,8 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.RowFactory;
 import org.apache.spark.sql.SQLContext;
 import org.apache.spark.sql.types.DataTypes;
+import org.apache.spark.sql.types.MetadataBuilder;
+import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
 import org.graphframes.GraphFrame;
 import org.graphframes.lib.PageRank;
@@ -54,7 +56,7 @@ public class Exercise_4 {
         // Create graph from Vertices and Edges
         GraphFrame G = GraphFrame.apply(V, E);
 
-        // Apply PageRank with damping factor 0.85 (1-0.15) and 17 iterations
+        // Apply PageRank with damping factor 0.85 (1-0.15) and 15 iterations
         PageRank pr = G.pageRank().resetProbability(0.15).maxIter(17);
         GraphFrame pageRankGraph = pr.run();
 
