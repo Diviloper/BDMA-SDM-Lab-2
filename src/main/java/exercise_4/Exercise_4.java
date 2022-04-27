@@ -3,10 +3,7 @@ package exercise_4;
 import com.google.common.collect.Lists;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Row;
-import org.apache.spark.sql.RowFactory;
-import org.apache.spark.sql.SQLContext;
+import org.apache.spark.sql.*;
 import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.MetadataBuilder;
 import org.apache.spark.sql.types.StructField;
@@ -55,9 +52,11 @@ public class Exercise_4 {
         // ------GRAPH------
         // Create graph from Vertices and Edges
         GraphFrame G = GraphFrame.apply(V, E);
+        PageRank pr = G.pageRank().resetProbability(0.15);
 
-        // Apply PageRank with damping factor 0.85 (1-0.15) and 15 iterations
-        PageRank pr = G.pageRank().resetProbability(0.15).maxIter(17);
+        Integer maxIterations = findBestIterations(pr);
+        System.out.println("Running with " + maxIterations + " iterations");
+        pr.maxIter(maxIterations);
         GraphFrame pageRankGraph = pr.run();
 
         List<Row> topPages = pageRankGraph
@@ -67,5 +66,28 @@ public class Exercise_4 {
         for (Row r : topPages) {
             System.out.println(r.getDouble(2) + ": " + r.getString(1));
         }
+    }
+
+    private static Integer findBestIterations(PageRank pr) {
+        Dataset<Row> previous = pr.maxIter(1).run().vertices();
+        int maxIter = 2;
+        while (true) {
+            pr.maxIter(maxIter);
+            Dataset<Row> current = pr.run().vertices();
+            Double difference = getAverageDifference(previous, current);
+            System.out.println("" + maxIter + " iterations: " + difference);
+            if (difference < 0.0001) break;
+            previous = current;
+            maxIter++;
+        }
+        return maxIter;
+    }
+
+    private static Double getAverageDifference(Dataset<Row> previous, Dataset<Row> next) {
+        return previous.drop("name").withColumnRenamed("pagerank", "previous_pagerank")
+                .join(next.drop("name").withColumnRenamed("pagerank", "next_pagerank"), "id")
+                .selectExpr("id", "abs(next_pagerank - previous_pagerank) AS diff")
+                .agg(functions.avg("diff"))
+                .first().getDouble(0);
     }
 }
