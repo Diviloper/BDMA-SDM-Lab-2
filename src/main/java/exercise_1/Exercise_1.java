@@ -20,6 +20,7 @@ public class Exercise_1 {
     private static class VProg extends AbstractFunction3<Object, Integer, Integer, Integer> implements Serializable {
         @Override
         public Integer apply(Object vertexID, Integer vertexValue, Integer message) {
+            System.out.println("Apply on vertex " + vertexID + " (" + vertexValue + ") <- " + message);
             return Math.max(vertexValue, message);
         }
     }
@@ -31,9 +32,11 @@ public class Exercise_1 {
             Tuple2<Object, Integer> dstVertex = triplet.toTuple()._2();
 
             if (sourceVertex._2 <= dstVertex._2) {   // source vertex value is smaller than dst vertex?
+//                System.out.println("Vertex " + sourceVertex._1 + " -> " + dstVertex._1 + ": No message");
                 // do nothing
                 return noMessages();
             } else {
+                System.out.println("Vertex " + sourceVertex._1 + " -> " + dstVertex._1 + ": " + sourceVertex._2);
                 // propagate source vertex value
                 return message(new Tuple2<>(triplet.dstId(), sourceVertex._2));
             }
@@ -43,6 +46,7 @@ public class Exercise_1 {
     private static class merge extends AbstractFunction2<Integer, Integer, Integer> implements Serializable {
         @Override
         public Integer apply(Integer o, Integer o2) {
+            System.out.println("Merge messages (" + o + ") - (" + o2 + ")");
             return Math.max(o, o2);
         }
     }
