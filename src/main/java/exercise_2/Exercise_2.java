@@ -54,7 +54,7 @@ public class Exercise_2 {
     }
 
     public static void shortestPaths(JavaSparkContext ctx) {
-        Map<Long, String> labels = ImmutableMap.<Long, String>builder()
+        Map<Object, String> labels = ImmutableMap.<Object, String>builder()
                 .put(1L, "A")
                 .put(2L, "B")
                 .put(3L, "C")
@@ -106,9 +106,9 @@ public class Exercise_2 {
                         ClassTag$.MODULE$.apply(Integer.class))
                 .vertices()
                 .toJavaRDD()
-                .sortBy(v -> labels.get((Long) v._1), true, 1)
+                .sortBy(v -> labels.get(v._1), true, 1)
                 .foreach(v -> System.out.println("Minimum cost to get from " + labels.get(1L) + " to "
-                        + labels.get((Long) v._1) + " is " + v._2));
+                        + labels.get(v._1) + " is " + v._2));
     }
 
 }

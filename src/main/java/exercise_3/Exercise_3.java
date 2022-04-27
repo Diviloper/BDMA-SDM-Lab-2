@@ -57,7 +57,7 @@ public class Exercise_3 {
     }
 
     public static void shortestPathsExt(JavaSparkContext ctx) {
-        Map<Long, String> labels = ImmutableMap.<Long, String>builder()
+        Map<Object, String> labels = ImmutableMap.<Object, String>builder()
                 .put(1L, "A")
                 .put(2L, "B")
                 .put(3L, "C")
@@ -108,10 +108,10 @@ public class Exercise_3 {
                         ClassTag$.MODULE$.apply(Tuple2.class))
                 .vertices()
                 .toJavaRDD()
-                .sortBy(v -> labels.get((Long) v._1), true, 1)
+                .sortBy(v -> labels.get(v._1), true, 1)
                 .foreach(v -> {
                     String path = v._2._2.stream().map(labels::get).collect(Collectors.joining(" -> "));
-                    System.out.println("Minimum path to get from " + labels.get(1L) + " to " + labels.get((Long) v._1) +
+                    System.out.println("Minimum path to get from " + labels.get(1L) + " to " + labels.get(v._1) +
                             " is [" + path + "] with cost " + v._2._1);
                 });
     }
